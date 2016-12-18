@@ -1,0 +1,15 @@
+// Aura
+// Script list file
+//
+// All scripts listed here will be loaded.
+//---------------------------------------------------------------------------
+
+divert  "/user/scripts/scripts.txt"
+
+include "scripts_special.txt"
+include "scripts_quests.txt"
+include "scripts_npcs.txt"
+include "scripts_others.txt"
+include "scripts_regions.txt"
+include "scripts_events.txt"
+include "scripts_custom.txt"

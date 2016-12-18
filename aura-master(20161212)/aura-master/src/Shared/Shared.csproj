@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{49B4C28D-3E7D-4F57-8549-B0E13354DE5D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Aura.Shared</RootNamespace>
+    <AssemblyName>Shared</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Boo.Lang, Version=2.0.9.5, Culture=neutral, PublicKeyToken=32c39770e9a21a67, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Boo.Lang.dll</HintPath>
+    </Reference>
+    <Reference Include="Boo.Lang.Compiler, Version=2.0.9.5, Culture=neutral, PublicKeyToken=32c39770e9a21a67, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Boo.Lang.Compiler.dll</HintPath>
+    </Reference>
+    <Reference Include="Boo.Lang.Extensions, Version=2.0.9.5, Culture=neutral, PublicKeyToken=32c39770e9a21a67, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Boo.Lang.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Boo.Lang.Parser, Version=2.0.9.5, Culture=neutral, PublicKeyToken=32c39770e9a21a67, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Boo.Lang.Parser.dll</HintPath>
+    </Reference>
+    <Reference Include="Boo.Lang.PatternMatching, Version=2.0.9.5, Culture=neutral, PublicKeyToken=32c39770e9a21a67, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Boo.Lang.PatternMatching.dll</HintPath>
+    </Reference>
+    <Reference Include="Boo.Lang.Useful, Version=2.0.9.5, Culture=neutral, PublicKeyToken=32c39770e9a21a67, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Boo.Lang.Useful.dll</HintPath>
+    </Reference>
+    <Reference Include="Boo.NAnt.Tasks, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Boo.NAnt.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="CSScriptLibrary, Version=3.5.2.0, Culture=neutral, PublicKeyToken=70fcc3d18c749033, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\CSScriptLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.6.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="nettext">
+      <HintPath>..\..\lib\nettext.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Database\Card.cs" />
+    <Compile Include="Database\Commands.cs" />
+    <Compile Include="Database\AuraDb.cs" />
+    <Compile Include="Database\Guild.cs" />
+    <Compile Include="Database\AbstractGuildManager.cs" />
+    <Compile Include="Database\GuildMember.cs" />
+    <Compile Include="Database\GuildRobe.cs" />
+    <Compile Include="Database\GuildStone.cs" />
+    <Compile Include="Database\PremiumServices.cs" />
+    <Compile Include="Scripting\Compilers\BooCompiler.cs" />
+    <Compile Include="Scripting\Compilers\Compiler.cs" />
+    <Compile Include="Scripting\Compilers\CompilerErrors.cs" />
+    <Compile Include="Scripting\Compilers\VisualBasicCompiler.cs" />
+    <Compile Include="Scripting\Compilers\CSharpCompiler.cs" />
+    <Compile Include="Scripting\Compilers\PreCompiler.cs" />
+    <Compile Include="Scripting\ScriptAttributes.cs" />
+    <Compile Include="Scripting\UserSystemScriptManager.cs" />
+    <Compile Include="Scripting\ScriptManager.cs" />
+    <Compile Include="Scripting\Scripts\IScript.cs" />
+    <Compile Include="Util\Collection.cs" />
+    <Compile Include="Util\Configuration\Files\Premium.cs" />
+    <Compile Include="Util\Password.cs" />
+    <Compile Include="Network\BaseClient.cs" />
+    <Compile Include="Network\BaseServer.cs" />
+    <Compile Include="Network\Crypto\AesFastEngine.cs" />
+    <Compile Include="Network\Crypto\MabiAesEngine.cs" />
+    <Compile Include="Network\Crypto\MabiCipherEngine.cs" />
+    <Compile Include="Network\Crypto\MabiCrypto.cs" />
+    <Compile Include="Network\Crypto\MabiKeystreamGenerator.cs" />
+    <Compile Include="Network\DefaultClient.cs" />
+    <Compile Include="Network\DefaultServer.cs" />
+    <Compile Include="Network\PacketHandlerManager.cs" />
+    <Compile Include="Network\Sending\Helpers\ServerInfoHelper.cs" />
+    <Compile Include="Network\ServerInfo.cs" />
+    <Compile Include="Network\ServerInfoManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\Configuration\BaseConf.cs" />
+    <Compile Include="Util\BCrypt.cs" />
+    <Compile Include="Util\Commands\CommandManager.cs" />
+    <Compile Include="Util\Configuration\ConfFile.cs" />
+    <Compile Include="Util\Commands\ConsoleCommands.cs" />
+    <Compile Include="Util\Configuration\Files\Database.cs" />
+    <Compile Include="Util\Configuration\Files\Inter.cs" />
+    <Compile Include="Util\Configuration\Files\Localization.cs" />
+    <Compile Include="Util\Configuration\Files\Log.cs" />
+    <Compile Include="Util\FileReader.cs" />
+    <Compile Include="Util\Localization.cs" />
+    <Compile Include="Util\Log.cs" />
+    <Compile Include="Util\CliUtil.cs" />
+    <Compile Include="Util\Math2.cs" />
+    <Compile Include="Util\OrderedDictionary.cs" />
+    <Compile Include="Util\RandomProvider.cs" />
+    <Compile Include="ServerMain.cs" />
+    <Compile Include="Util\Extensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Data\Data.csproj">
+      <Project>{2DEA473E-6FD9-4875-926E-8A1CF3E89703}</Project>
+      <Name>Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mabi\Mabi.csproj">
+      <Project>{68361442-6ad0-4334-816c-c719652f1909}</Project>
+      <Name>Mabi</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,521 @@
+//--- Aura Script -----------------------------------------------------------
+// Deian
+//--- Description -----------------------------------------------------------
+// Shepard - manages the sheep at Tir Chonaill Grassland
+//---------------------------------------------------------------------------
+
+public class DeianScript : NpcScript
+{
+	public override void Load()
+	{
+		SetRace(10002);
+		SetName("_deian");
+		SetBody(height: 0.85f);
+		SetFace(skinColor: 23, eyeType: 19, eyeColor: 0, mouthType: 0);
+		SetStand("human/male/anim/male_natural_stand_npc_deian");
+		SetLocation(1, 27953, 42287, 158);
+		SetGiftWeights(beauty: 0, individuality: 1, luxury: -1, toughness: 0, utility: 2, rarity: 1, meaning: -1, adult: -1, maniac: 2, anime: 2, sexy: 2);
+
+		EquipItem(Pocket.Face, 4900, 0x00FFDC53, 0x00FFB682, 0x00A8DDD3);
+		EquipItem(Pocket.Hair, 4156, 0x00E7CB60, 0x00E7CB60, 0x00E7CB60);
+		EquipItem(Pocket.Armor, 15656, 0x00E2EDC7, 0x004F5E44, 0x00000000);
+		EquipItem(Pocket.Glove, 16099, 0x00343F2D, 0x00000000, 0x00000000);
+		EquipItem(Pocket.Shoe, 17287, 0x004C392A, 0x00000000, 0x00000000);
+		EquipItem(Pocket.Head, 18407, 0x00343F2D, 0x00000000, 0x00000000);
+		EquipItem(Pocket.RightHand1, 40001, 0x00755748, 0x005E9A49, 0x005E9A49);
+
+		AddPhrase("Another day... another boring day in the countryside.");
+		AddPhrase("Baa! Baa!");
+		AddPhrase("Geez, these sheep are a pain in the neck.");
+		AddPhrase("Hey, this way!");
+		AddPhrase("I don't understand. I have one extra...");
+		AddPhrase("I'm so bored. There's just nothing exciting around here.");
+		AddPhrase("It's amazing how fast they grow feeding on grass.");
+		AddPhrase("I wonder if I could buy a house with my savings yet...");
+		AddPhrase("What the... Now there's one missing!");
+		AddPhrase("I used to think they were cute. But it gets annoying when you have too many of them.");
+	}
+
+	protected override async Task Talk()
+	{
+		SetBgm("NPC_Deian.mp3");
+
+		await Intro(L("An adolescent boy carrying a shepherd's staff watches over a flock of sheep.<br/>Now and then, he hollers at some sheep that've wandered too far, and his voice cracks every time.<br/>His skin is tanned and his muscles are strong from his daily work.<br/>Though he's young, he peers at you with so much confidence it almost seems like arrogance."));
+
+		Msg("What can I do for you?", Button("Start a Conversation", "@talk"), Button("Shop", "@shop"), Button("Modify Item", "@upgrade"));
+
+		switch (await Select())
+		{
+			case "@talk":
+				Greet();
+				Msg(Hide.Name, GetMoodString(), FavorExpression());
+
+				var today = ErinnTime.Now.ToString("yyyyMMdd");
+				if (today != Player.Vars.Perm["deian_title_gift"])
+				{
+					switch (Title)
+					{
+						case 10059: // is a friend of Trefor
+						case 10060: // is a friend of Deian
+							Player.Vars.Perm["deian_title_gift"] = today;
+
+							GiveItem(71021); // Brown Fox Fomor Scroll
+							Notice(L("Received Brown Fox Fomor Scroll from Shepherd Boy Deian."));
+							SystemMsg(L("Received Brown Fox Fomor Scroll from Shepherd Boy Deian."));
+
+							Msg(L("Perfect timing. <username/>.<br/>I've been meaning to give you this."));
+							break;
+					}
+				}
+
+				if (Title == 11001)
+				{
+					Msg("Hey! <username/>, that's my job you just did! What am I supposed to do now?<br/>Man! There must be something more heroic that I could do as a warrior...");
+				}
+				else if (Title == 11002)
+				{
+					Msg("Eh? <username/>...<br/>You've become the Guardian of Erinn?<br/>So fast!<br/>I'm still trying to become a Warrior!");
+					Msg("Good for you.<br/>Just make sure you leave me some work to do for when I become a Warrior.<br/>Wow, must've been tough.");
+				}
+
+				await Conversation();
+				break;
+
+			case "@shop":
+				Msg("I got nothing much, except for some quest scrolls. Are you interested?");
+				OpenShop("DeianShop");
+				return;
+
+			case "@upgrade":
+				Msg("Upgrades! Who else would know more about that than the great Deian? Hehe...<br/>Now, what do you want to upgrade?<br/>Don't forget to check how many times you can upgrade that tiem and what type of upgrade it is before you give it to me... <upgrade />");
+
+				while (true)
+				{
+					var reply = await Select();
+
+					if (!reply.StartsWith("@upgrade:"))
+						break;
+
+					var result = Upgrade(reply);
+					if (result.Success)
+						Msg("Yes! Success!<br/>Honestly, I am a little surprised myself.<br/>Would you like some more upgrades? I'm starting to enjoy this.");
+					else
+						Msg("(Error)");
+				}
+
+				Msg("Come and see me again.<br/>I just discovered I have a new talent. Thanks to you!");
+				break;
+		}
+
+		End("(You ended your conversation with Deian.)");
+	}
+
+	private void Greet()
+	{
+		if (Memory <= 0)
+		{
+			Msg(FavorExpression(), L("Nice to meet you, I am Deian.<br/>You don't look that old, maybe a couple of years older than I am?<br/>Let's just say we're the same age. You don't mind do ya?"));
+		}
+		else if (Memory == 1)
+		{
+			Msg(FavorExpression(), L("Nice to meet you again."));
+		}
+		else if (Memory == 2)
+		{
+			Msg(FavorExpression(), L("<username/>, right? I remember you. How could I forget that face..."));
+		}
+		else if (Memory <= 6)
+		{
+			Msg(FavorExpression(), L("Welcome, <username/>."));
+		}
+		else
+		{
+			Msg(FavorExpression(), L("I've been seeing you a lot, <username/>.<br/>Do you like me or something?"));
+		}
+
+		UpdateRelationAfterGreet();
+	}
+
+	protected override async Task Keywords(string keyword)
+	{
+		switch (keyword)
+		{
+			case "personal_info":
+				// Got White, Red, and Black Spider Fomor Scrolls?
+				// Give Giant Spider Fomor Scroll for spider RP dungeon.
+				if ((HasItem(71017) && HasItem(71018) && HasItem(71019)) && !HasItem(73108) && !HasKeyword("RP_Monster_GiantSpider_complete"))
+				{
+					GiveKeyword("RP_Monster_GiantSpider_start");
+					GiveItem(73108); // Giant Spider Fomor Scroll
+					SystemNotice(L("Received Giant Spider Fomor Scroll from Shepherd Boy Deian."));
+
+					Msg(L("Do you know there is a giant spider living inside Alby Dungeon?<br/>I picked up a scroll titled 'Giant Spider's Fomor Scroll'.<br/>I think you can see something if you use this in Alby Dungeon.<br/>You can have it. I don't need it."));
+				}
+				else
+				{
+					if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+					{
+						Msg(FavorExpression(), "Do you know what shepherds and warriors have in common?<br/>They both need to look after others.<br/>...<br/>I was being serious for once!");
+						ModifyRelation(Random(2), 0, Random(2));
+					}
+					else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+					{
+						Msg(FavorExpression(), "Hmm... I come from a family of generals. Some of them were very famous.<br/>What...? So what am I doing here?<br/>How should I know?");
+						ModifyRelation(Random(2), 0, Random(2));
+					}
+					else if (Favor >= 10 && Stress <= 10)
+					{
+						Msg(FavorExpression(), "What does a shepherd do? Uh, look after sheep?<br/>Let the sheep feed, look for them if they get lost...");
+						ModifyRelation(Random(2), Random(2), Random(2));
+					}
+					else if (Favor <= -10)
+					{
+						Msg(FavorExpression(), "People look down on me because I live out here...<br/>Whatever...");
+						ModifyRelation(Random(2), 0, Random(1, 3));
+					}
+					else if (Favor <= -30 && Stress <= 10)
+					{
+						Msg(FavorExpression(), "My BGM, I know others like it, but I don't.<br/>Can't it be more romantic and sentimental, you know?<br/>A song revealing the pure heart and mind of a teenage boy who has gentle pangs of loneliness?");
+						ModifyRelation(Random(2), 0, Random(1, 3));
+					}
+					else if (Favor <= -30 && Stress > 10)
+					{
+						Msg(FavorExpression(), "I get frustrated when people like you keep asking questions! Jeez, you're ruining my day.");
+						ModifyRelation(Random(2), -Random(2), Random(1, 4));
+					}
+					else
+					{
+						Msg(FavorExpression(), "Yeah, yeah. I'm a mere shepherd...for now.<br/>But I will soon be a mighty warrior!");
+						ModifyRelation(Random(2), 0, Random(3));
+					}
+				}
+				break;
+
+			case "RP_Monster_GiantSpider_Born":
+				GiveItem(Item.CreateEnchanted(40023, prefix: 20203)); // Shepherd's Gathering Knife
+				RemoveKeyword("RP_Monster_GiantSpider_Born");
+
+				Msg(L("So, the Giant Spider had a great story behind it.<br/>But, it's incredible that you could experience the world from a spider's point of view.<br/>Alright. I'll give you a present for having done that.<br/>Check your Inventory."));
+				break;
+
+			case "rumor":
+				if (Memory >= 15 && Favor >= 50 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "<username/>. Now that I've even memorized your name...<br/>You are really persistent.<br/>Everyone in town has something to say about you.");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "You heard that sheep are gentle? News flash, buddy! That's totally wrong.<br/>Do you know how stubborn sheep are?<br/>Imagine taking care of an entire flock of these suckers...<br/>Sure, they provide wool but sometimes it's definitely not worth it!");
+					ModifyRelation(Random(2), 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "There are always a few knuckle heads that try to hit the sheep... Please don't do that.<br/>That's animal abuse, you know that?");
+					ModifyRelation(Random(2), Random(2), Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Dude, you must have a lot of spare time.<br/>Killing time with a shepherd boy like me.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "You can't just believe every rumor you hear. Don't take it so seriously.");
+					ModifyRelation(Random(2), 0, Random(1, 3));
+				}
+				else if (Favor <= -30 && Stress > 10)
+				{
+					Msg(FavorExpression(), "If you keep listening to gossip,<br/>you're going to end up wasting your life...");
+					ModifyRelation(Random(2), -Random(2), Random(1, 4));
+				}
+				else
+				{
+					GiveKeyword("pool");
+					Msg(FavorExpression(), "Some people should have been born as fish.<br/>They can't pass water without diving right in.<br/>I wish they'd stop.");
+					Msg("Not long ago, someone jumped into the reservoir<br/>and made a huge mess.<br/>Guess who got stuck cleaning it up?<br/>Sooo not my job.");
+					ModifyRelation(Random(2), 0, Random(3));
+				}
+				break;
+
+			case "about_skill":
+				if (HasSkill(SkillId.PlayingInstrument))
+				{
+					Msg("Alright, so you know about the Instrument Playing skill.<br/>It's always good to know how to appreciate art, haha!");
+				}
+				else
+				{
+					GiveKeyword("skill_instrument");
+					Msg("Know anything about the Instrument Playing skill?<br/>Only introspective guys like me<br/>can handle instruments.<br/>I wonder how well you would do...");
+					Msg("Priestess Endelyon knows all about this skill.<br/>You should talk to her.<br/>");
+				}
+				break;
+
+			case "about_arbeit":
+				Msg("Unimplemented");
+				//Msg("It's not time to start work yet.<br/>Can you come back and ask for a job later?");
+				//Msg("Do you want a part-time job? I'm always in need of help.<br/>Have you ever sheared a sheep before?<br/>If you keep doing a good job, I'll raise your pay.<br/>Want to give it a try?");
+				break;
+
+			case "shop_misc":
+				Msg("You know the guy at the General Shop? His name is Malcolm.<br/>Everyone knows he's a hermit.<br/>He does nothing but work, all day long.<br/>What a dull life!");
+				break;
+
+			case "shop_grocery":
+				Msg("Every time I go there, I smell fresh baked bread. Yum.<br/>Boy, I miss that fatty, Caitin.");
+				Msg("You know what? Caitin has a pretty face,<br/>but her legs are so chunky! Like tree trunks! Hahahaha!<br/>There's a reason she wears long skirts.<br/>Hehe...");
+				break;
+
+			case "shop_healing":
+				Msg("Oh, you are talking about Dilys' place.<br/>Sometimes, even when I bring a sick lamb, she still treats it with extra care.<br/>I guess lambs and humans aren't that much different when they're sick...");
+				break;
+
+			case "shop_inn":
+				GiveKeyword("skill_campfire");
+				Msg("Staying up all night, sleeping under trees during the day...<br/>When you have my lifestyle, you don't need to sleep at an Inn!<br/>All I need is the Campfire skill to survive!");
+				break;
+
+			case "shop_bank":
+				Msg("Darn, I wish I had enough items to deposit at the Bank.<br/>Did you talk to Bebhinn?<br/>Bebhinn loves to talk about other people.<br/>You'd better be careful when you talk to her.");
+				break;
+
+			case "shop_smith":
+				Msg("The Blacksmith's Shop is too hot. I just hate the heat.<br/>I'd rather be under the shade of a nice tree...");
+				break;
+
+			case "skill_range":
+				GiveKeyword("school");
+				Msg("Don't you think it's best to go to the School<br/>and ask Ranald about it?<br/>I don't mind telling you about it myself,<br/>but Ranald doesn't like it when I teach people...");
+				break;
+
+			case "skill_instrument":
+				GiveKeyword("temple");
+				Msg("You really are something.<br/>I just told you,<br/>talk to Priestess Endelyon at the Church<br/>about that.");
+				Msg("I know your type...<br/>You like to use everything single<br/>keyword you get... Bug off!");
+				break;
+
+			case "skill_tailoring":
+				Msg("Hey, if I had a skill like that, why on Erinn would I be here tending sheep?<br/>It seems interesting,<br/>but my parents would go crazy if they caught me with a needle and thread.");
+				Msg("I hear chubby Caitin knows a lot.<br/>Problem is, she gets upset when she sees me...<br/>If you learn that skill, can you teach me?");
+				break;
+
+			case "skill_magnum_shot":
+				Msg("I've been losing one or two sheep everyday since I told you about that.<br/>You're not trying to steal my sheep, are you?");
+				Msg("I'm joking... Don't get so defensive.");
+				break;
+
+			case "skill_counter_attack":
+				Msg("I heard somewhere, you can learn that<br/>by getting beat up...<br/> It's not worth it for me.<br/>A method like that just seems stupid...");
+				break;
+
+			case "skill_smash":
+				Msg("Well, I learned that before.");
+				Msg("But I forgot.");
+				break;
+
+			case "skill_gathering":
+				Msg("Here's the rundown.<br/>Think about what you want to gather first, then, find out where you can get it.<br/>You'll need the right tool.<br/>More importantly, you need time, hard work, and money.");
+				Msg("But you won't get paid much.<br/>You want to make an easy living by picking up stuff from the ground, right?<br/>But trust me, it's not that easy. I've tried.");
+				break;
+
+			case "square":
+				Msg("The Square? Are you serious?<br/>You haven't been there yet?<br/>You are such a bad liar!<br/>I saw you walking out from the Square<br/>just a moment ago!");
+				break;
+
+			case "pool":
+				Msg("It's right behind chubby ol' Caitin's place.<br/>You know where her Grocery Store is, right?");
+				Msg("By the way, what are you going to do there?<br/>You're not going to jump in, are you?<br/>I'm just teasing. Calm down.");
+				break;
+
+			case "farmland":
+				Msg("Are you really interested in that?<br/>Don't ask unless you are really interested!<br/>What? How am I suppose to know if you are interested or not?<br/>If you are interested in the farmland, what are you doing here?");
+				break;
+
+			case "windmill":
+				Msg("You must be talking about the Windmill down there.<br/>Well, you won't find anything interesting there.<br/>You'll see a little kid.<br/>Even if she acts rude, just let her be...");
+				break;
+
+			case "brook":
+				Msg("It's the stream right over there!<br/>Didn't you cross the bridge on your way here?<br/>Ha... Your memory is a bit...poor.");
+				Msg("Sometimes, if you stay here long enough,<br/>you see people peeing in it.  Gross.");
+				break;
+
+			case "shop_headman":
+				Msg("If you're going to the Chief's House,<br/>go to the Square first.<br/>You'll find a hill with a drawing on it.");
+				Msg("Yeah, where the big tree is.<br/>There's a house over that hill.<br/>That's where our Chief lives.");
+				break;
+
+			case "temple":
+				Msg("The Church... Hm, the Church....<br/>That... Er... Hmm...");
+				Msg("Well, I don't know! Go into town and ask someone there!<br/>Or just look at your Minimap, geez!");
+				break;
+
+			case "school":
+				Msg("Where's the School?<br/>Wow, you are way lost.");
+				Msg("Okay, cross the stream first, alright?<br/>Then run along, with the stream on your left<br/>and you will see the farmland.<br/>Once you see it, you know you're almost there.");
+				Msg("It's really close to the farmland, so you'll see it right away.");
+				Msg("Hey, wait a minute. Why am I telling you all this?<br/>I'm a busy guy!");
+				break;
+
+			case "skill_campfire":
+				if (!HasSkill(SkillId.Campfire))
+				{
+					if (!HasKeyword("deian_01"))
+					{
+						GiveItem(1012); // Campfire Manual
+						GiveItem(63002, 5); // Firewood
+						GiveKeyword("deian_01");
+
+						Msg(L("Are you here for the Campfire skill?<br/>You see that over there? The burnt spot on the ground? I've been trying to learn it myself.<br/>But no matter how much I try, I just can't get it."));
+						Msg(L("It's harder than it looks... All I get is smoke and the spark won't catch.<br/>It's driving me crazy..."));
+						Msg(L("I even went to Duncan's house and secretly borrowed a book he had about campfires,<br/>but I couldn't understand a word of it!"));
+						Msg(L("I can't teach that skill even if I wanted to.<br/>What? You want to see the book? Umm....<br/>Fine, you did help me with my sheep last time.<br/>Here, take the book and the campfire material I have.<br/>I owe you anyway."));
+					}
+					else
+					{
+						Msg(L("I gave out the Campfire book a while ago.<br/>You haven't figured the skill out yet?<br/>Well, it was difficult even for the brilliant me,<br/>it'll just take some more time~<p/>Whoops...don't make such a scary face.<br/>It's a long book and I couldn't understand it.<br/>I'm not ashamed!<br/>After poking around I made some friends, hehehe."));
+					}
+				}
+				else
+				{
+					RemoveKeyword("skill_campfire");
+					RemoveKeyword("deian_01");
+					Msg("Hey, you! What are you doing!<br/>Are you trying to use the Campfire skill here?<br/>Are you crazy!? You want to burn all my wool?<br/>Go away! Go away!<br/>You want to play with fire? Go do it far away from here!");
+				}
+				break;
+
+			case "shop_restaurant":
+				GiveKeyword("shop_grocery");
+				Msg("Restaurant? You must be talking about the Grocery Store.<br/>Speaking of food,<br/>my stomach is growling...");
+				Msg("It's been a while since I've had a decent meal.<br/>I always eat out here.<br/>A hard loaf of bread and plain water.<br/>Let's see, was there a restaurant in our town?");
+				break;
+
+			case "shop_armory":
+				GiveKeyword("shop_smith");
+				Msg("A Weapons Shop? What for?<br/>What are you going to do with a weapon?<br/>Think you'll put good use to it if you buy it now?<br/>I don't think so!");
+				break;
+
+			case "shop_cloth":
+				Msg("You...are interested in fashion?<br/>Haha.<br/>Puhaha.<br/>Haha...");
+				Msg("Haha...so...sorry, haha, it's just funny...<br/>Talking about fashion in a place like this?<br/>Did it ever cross your mind that this might be the wrong place for that?");
+				break;
+
+			case "shop_bookstore":
+				Msg("Oh, you like reading?<br/>I'm not sure that will really help you with your life.<br/>I'll bet most people in town would say the same thing.<br/>Why else aren't there any bookstores in town?");
+				Msg("I don't really understand what people get out of reading.<br/>Books are full of rubbish or fairy tales, you know.<br/>Why do you like reading books?");
+				break;
+
+			case "shop_goverment_office":
+				Msg("Haha! You're joking, right?<br/>Why would this small town ever need a town office?<br/>Don't worry...if you've lost something, it's usually kept at the Chief's House.");
+				break;
+
+			case "graveyard":
+				Msg("The graveyard? That place is creepy.");
+				Msg("You know it's on your Minimap...<br/>Asking all these foolish questions...<br/>What's your problem?");
+				break;
+
+			case "bow":
+				GiveKeyword("shop_smith");
+				Msg("You can find a lot of bows at the Blacksmith's Shop.<br/>There's one nearby.<br/>If Ferghus is drunk, it might be possible to sneak one out.");
+				Msg("I'm just kidding! You weren't really thinking about doing that...were you?");
+				break;
+
+			case "lute":
+				Msg("Oh... I want a red lute.<br/>Why don't you buy me one when you get rich, yea?");
+				break;
+
+			case "complicity":
+				Msg("Welcome to the real world...");
+				break;
+
+			case "tir_na_nog":
+				Msg("Haha.... Tir Na Nog?<br/>Surely you don't really believe that place exists?<br/>Adults just make up stories to control their children.<br/>Don't take it so seriously.");
+				break;
+
+			case "mabinogi":
+				Msg("You think I'm a dumb shepherd, huh?<br/>Don't look down on me, bro. I know what you're talking about!");
+				Msg("It's uh...<br/>It's a song those bards sing all the time! Right? Right?<br/>Psh. I know more than you think!");
+				break;
+
+			case "musicsheet":
+				Msg("Music Score? I heard you need it to play music.<br/>I am interested in instruments but not so much in Music Scores.");
+				break;
+
+			default:
+				if (Memory >= 15 && Favor >= 30 && Stress <= 5)
+				{
+					Msg(FavorExpression(), "I almost fell asleep! Sorry.");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor >= 10 && Stress <= 10)
+				{
+					Msg(FavorExpression(), "Hmm... I think I heard about that somewhere, but I forget. Sorry!");
+					ModifyRelation(0, 0, Random(2));
+				}
+				else if (Favor <= -10)
+				{
+					Msg(FavorExpression(), "Life must be easy for you, right? Talking about such things...");
+					ModifyRelation(0, 0, Random(4));
+				}
+				else if (Favor <= -30)
+				{
+					Msg(FavorExpression(), "Don't you have anything else to do?");
+					ModifyRelation(0, 0, Random(5));
+				}
+				else
+				{
+					RndFavorMsg(
+						"Meh, I don't want to tell you.",
+						"Ask all you want, I'm not telling you.",
+						"What are you going to give me in exchange?",
+						"Hold up, I feel like I'm being interrogated.",
+						"Pry all you like. You'll get nothing from me.",
+						"So many questions, at least give me a small gift...",
+						"Sometimes, I'm just not in the mood to answer questions.",
+						"Don't be ridiculous. It's not that I don't know, I just don't want to tell you."
+					);
+					ModifyRelation(0, 0, Random(3));
+				}
+				break;
+		}
+	}
+
+	protected override async Task Gift(Item item, GiftReaction reaction)
+	{
+		switch (reaction)
+		{
+			case GiftReaction.Love:
+				Msg(L("Wow!"));
+				Msg(L("This is what I really wanted! Are you really giving it to me?<br/>Wow, thank you so much!"));
+				break;
+
+			case GiftReaction.Like:
+				Msg(L("Haha! What's up with the present all of a sudden? Thanks. I'll put it to good use."));
+				break;
+
+			case GiftReaction.Neutral:
+				Msg(L("A present? Thank you."));
+				break;
+
+			case GiftReaction.Dislike:
+				Msg(L("Hmm... It's not really my style, but since it's free..."));
+				break;
+		}
+	}
+}
+
+public class DeianShop : NpcShopScript
+{
+	public override void Setup()
+	{
+		AddQuest("Party Quest", 100007, 5);  // [PQ] Hunt Gray Wolves (10)
+		AddQuest("Party Quest", 100008, 20); // [PQ] Hunt Gray Wolves (30)
+		AddQuest("Party Quest", 100009, 15); // [PQ] Hunt Black Wolves (10)
+		AddQuest("Party Quest", 100010, 50); // [PQ] Hunt Black Wolves (30)
+		AddQuest("Party Quest", 100011, 10); // [PQ] Hunt White Wolves (10)
+		AddQuest("Party Quest", 100012, 10); // [PQ] Hunt White Wolves (30)
+		AddQuest("Party Quest", 100035, 20); // [PQ] Hunt Down the Brown Dire Wolves (30)
+
+		Add("Gathering Tools", 40023); // Gathering Knife
+	}
+}

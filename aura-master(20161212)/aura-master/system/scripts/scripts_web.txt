@@ -1,0 +1,11 @@
+// Aura
+// Script list file
+//
+// All scripts listed here will be loaded.
+// All non-essential controllers are disabled (commented) by default,
+// uncomment them to use them.
+//---------------------------------------------------------------------------
+
+// web/some_script.cs
+
+include "/user/scripts/scripts_web.txt"

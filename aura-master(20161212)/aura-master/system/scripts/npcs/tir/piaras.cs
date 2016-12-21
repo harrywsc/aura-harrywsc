@@ -73,7 +73,7 @@ public class PiarasScript : NpcScript
 				break;
 
 			case "@shop":
-				Msg("May I ask what you are looking for?");
+				Msg("你想要买些什么？");
 				OpenShop("PiarasShop");
 				return;
 		}

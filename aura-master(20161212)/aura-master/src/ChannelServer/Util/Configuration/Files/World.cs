@@ -117,7 +117,7 @@ namespace Aura.Channel.Util.Configuration.Files
 			this.GlobalBank = this.GetBool("global_bank", true);
 			this.ReusingPersonalShopLicenses = this.GetBool("reusing_personal_shop_licenses", false);
 
-			this.RebirthTime = TimeSpan.FromDays(this.GetInt("rebirth_time", 6));
+			this.RebirthTime = TimeSpan.FromDays(this.GetInt("rebirth_time", 6));//设置转生时间
 
 			this.BankGoldPerCharacter = this.GetInt("gold_per_character", 5000000);
 

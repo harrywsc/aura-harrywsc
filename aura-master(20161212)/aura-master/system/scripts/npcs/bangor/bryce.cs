@@ -21,28 +21,32 @@ public class BryceScript : NpcScript
 		EquipItem(Pocket.Armor, 15034, 0x00FAF7EB, 0x003C2D22, 0x00100C0A);
 		EquipItem(Pocket.Shoe, 17009, 0x00000000, 0x00F69A2B, 0x004B676F);
 
-		AddPhrase("*Cough* There's just too much dust in here.");
-		AddPhrase("Anyway, where did Ibbie go again?");
-		AddPhrase("Have my eyes really become this bad?");
-		AddPhrase("I don't even have time to read a book these days.");
-		AddPhrase("I'll just have to fight through it.");
-		AddPhrase("It's about the time Ibbie returned.");
-		AddPhrase("It's almost time.");
-		AddPhrase("Mmm... Up to where did I calculate?");
-		AddPhrase("Sion, you little punk... You'll pay if you bully my Ibbie.");
-		AddPhrase("Tomorrow will be better than today.");
-		AddPhrase("Well, cheer up!");
-		AddPhrase("What should I buy Ibbie today?");
-		AddPhrase("When was I supposed to be contacted from Dunbarton?");
+		AddPhrase("*咳嗽* 有太多的灰尘在这里了。");
+		AddPhrase("不管怎样，艾比哪里去了？");
+		AddPhrase("我的眼睛真的看不见东西了？");
+		AddPhrase("这些天我都没有时间去读一本书");
+		AddPhrase("我要恢复这一切。");
+		AddPhrase("是艾比回来了吗？");
+		AddPhrase("时间差不多了。");
+		AddPhrase("嗯…我在什么地方？");
+		AddPhrase("锡安，你这个小流氓…如果你敢欺负我家艾比，那你不得好死。");
+		AddPhrase("明天会比今天更加好。");
+		AddPhrase("好了，振作起来！");
+		AddPhrase("艾比，今天我应该买些什么？");
+		AddPhrase("我应该什么时候去联系邓巴顿？");
 	}
 
 	protected override async Task Talk()
 	{
 		SetBgm("NPC_Bryce.mp3");
 
-		await Intro(L("He's dressed neatly in a high neck shirt and a brown vest.<br/>His cleft chin is cleanly shaved and his hair has been well groomed and flawlessly brushed back.<br/>He stares at you with shining hazelnut eyes that are deep-set in his pale face."));
-
-		Msg("What is it?", Button("Start a Conversation", "@talk"), Button("Open My Account", "@bank"), Button("Redeem Coupon", "@coupon"), Button("Shop", "@shop"));
+		await Intro(
+			"他穿着一件很整洁的衬衫和一件棕色的背心。",
+			"他的下巴剃干净，他的头发已经整齐和完美。",
+			"他看着你的眼睛，闪闪发光的榛子在他那苍白的脸的深处。"
+		);
+		
+		Msg("这是什么？", Button("Start a Conversation", "@talk"), Button("Open My Account", "@bank"), Button("Redeem Coupon", "@coupon"), Button("Shop", "@shop"));
 
 		switch (await Select())
 		{
@@ -58,8 +62,8 @@ public class BryceScript : NpcScript
 				}
 				else if (Title == 11002)
 				{
-					Msg("Guardian of Erinn...?<br/>You know, listening to over exaggerated rumors<br/>can be dangerous to you.");
-					Msg("Although, if anyone, you could<br/>probably fit that title...");
+					Msg("守护艾琳…？<br/>你要知道那些夸大其词的谣言<br/>对你很危险。");
+					Msg("虽然这样，如果有人阻止<br/>我还是会这样");
 				}
 
 				await Conversation();
@@ -70,7 +74,7 @@ public class BryceScript : NpcScript
 				return;
 
 			case "@coupon":
-				Msg("Would you like to redeem your coupon?<br/>You're a blessed one.<br/>Please input the number of the coupon you wish to redeem.", Input("Redeem Coupon", "Enter Coupon Number"));
+				Msg("你想兑换你的优惠券吗？<br/>你是一个幸运的人，请输入你想兑换的优惠券的数量。", Input("Redeem Coupon", "Enter Coupon Number"));
 				var input = await Select();
 
 				if (input == "@cancel")
@@ -78,33 +82,33 @@ public class BryceScript : NpcScript
 
 				if (!RedeemCoupon(input))
 				{
-					Msg("......<br/>I'm not sure what kind of coupon this is.<br/>Please make sure that you have inputted the correct coupon number.");
+					Msg("......<br/>我不确定这是一个什么礼券。<br/>请确保您输入了正确的优惠券号码。");
 				}
 				else
 				{
 					// Unofficial response.
-					Msg("There you go, have a nice day.");
+					Msg("你去那里都会有美好的一天。");
 				}
 				break;
 
 			case "@shop":
-				Msg("You need a license to open a Personal Shop here.<br/>...I recommend buying one in case you need it.");
+				Msg("你需要一个许可证在这里开一家私人商店<br/>...我建议你买一家，因为你需要它。");
 				OpenShop("BryceShop");
 				return;
 		}
 
-		End("Thank you, <npcname/>. I'll see you later!");
+		End("谢谢你， <npcname/>. 我们会再见面的。");
 	}
 
 	private void Greet()
 	{
 		if (Memory <= 0)
 		{
-			Msg(FavorExpression(), L("Welcome to the Bangor branch of the Erskin Bank."));
+			Msg(FavorExpression(), L("欢迎来到的厄斯金银行邦戈分行"));
 		}
 		else if (Memory == 1)
 		{
-			Msg(FavorExpression(), L("Hello, <username/>. I'm pretty good with names."));
+			Msg(FavorExpression(), L("你好, <username/>. 你的名字真好听。"));
 		}
 		else if (Memory == 2)
 		{
@@ -127,161 +131,161 @@ public class BryceScript : NpcScript
 		switch (keyword)
 		{
 			case "personal_info":
-				Msg(FavorExpression(), "My name is <npcname/>.<br/>I take care of bank duties here.<br/>Is there anything I can help you with?");
-				ModifyRelation(Random(2), 0, Random(3));
+				Msg(FavorExpression(), "我的名字是布莱斯。<br/>我在银行工作。<br/>有什么可以帮到你的吗？");
+				ModifyRelation(Random(2), 0, Random(2));
 				break;
 
 			case "rumor":
 				Msg(FavorExpression(), "How is this town?");
-				Msg("Judging from your looks,<br/>I'm guessing you want to talk about the dragon ruins found on the way into this town.");
-				Msg("Are you interested in hearing an old legend?<br/>If you are, there is an ancient tale I'd like to tell you.");
-				Msg("I heard this tale a long time ago.<br/>The ancient humans who lived around here used to worship a dragon.");
-				Msg("The dragon made regular appearances in this town,<br/>burning everything to the ground.<br/>Town folks built a gigantic stone statue<br/>and sacrificed virgins of the town to ease the rage of the dragon.");
-				Msg("People called that dragon Cromm Cruaich.<br/>A God of Destruction from another world.<br/>Yes, it's the dragon that took the life of the ancient king, Nuadha.");
-				ModifyRelation(Random(2), 0, Random(3));
+				Msg("从你的外表看，<br/>我猜你想谈谈然后在这个镇上找到的龙遗址。");
+				Msg("你有兴趣听一个古老的传说吗？<br/>如果你有兴趣，我倒是有一个古老的故事想告诉你。");
+				Msg("我很久以前就听说过这个故事，<br/>在这里居住的古代人都很崇拜龙。");
+				Msg("龙在这个城市经常出现，<br/>它把一切的愤怒的烈焰燃烧到地面。<br/>因此城里的人们建造了一个巨大的石头雕像<br/>和牺牲女人来平息龙的愤怒。.");
+				Msg("人们称它为科隆科鲁亚龙。<br/>它是神的毁灭，来自另一个世界。<br/>是的，它就是是和古代国王一起长大的龙，努阿达。");
+				ModifyRelation(Random(2), 0, Random(2));
 				break;
 
 			case "about_arbeit":
-				Msg("Part-time job?<br/>I don't know. Right now, I'm good by myself here.");
+				Msg("去兼职工作？<br/>“我不知道”。现在，我在这里很好。");
 				break;
 
 			case "shop_misc":
-				Msg("If you make a turn at the next alley,<br/>you should be able to see it.");
+				Msg("你在下一个小巷转弯，<br/>应该就能够看到它。");
 				break;
 
 			case "shop_grocery":
-				Msg("You seem to be looking for a good place to eat.<br/>Since this is a small town, the only place you'll find food is at the Pub.");
-				Msg("Jennifer is a decent cook,<br/>so unless you're too picky with food, the Pub should be good enough.");
-				Msg("It's just that Jennifer's a bit lazy, so... Hm-Hmm...");
+				Msg("你似乎在寻找一个有美食的地方，<br/>倒是有这样一个地方，他在那个小镇唯一酒吧里。");
+				Msg("珍妮佛是一个正派的厨师，<br/>所以除非你对食物太挑剔，这个酒吧应该足够好。");
+				Msg("只是珍妮佛有点懒惰，所以…嗯，哈哈哈. ..");
 				break;
 
 			case "shop_healing":
-				Msg("There's no such place around here.<br/>I was really worried when Ibbie was sick as well.");
-				Msg("This town may not have much to offer for now, but<br/>I am confident that with time, things will get better.");
+				Msg("有没有在这个的地方。<br/>我真的很担心你和艾比生病的时候一样。");
+				Msg("这个小镇现在可能没有太多的东西了，但是<br/>我相信随着时间的推移，事情都会变得更好美好。");
 				break;
 
 			case "shop_inn":
-				Msg("This town doesn't have an inn,<br/>Drifters aren't so common here, you see.<br/>You could always camp outside of town<br/>Rustic, I know, but what can you do? You should bear with it for now.");
+				Msg("这个镇没有一家客栈，<br/>流浪的人都不会来这里，所以你看。<br/>你总是这么怨天尤人<br/>外面的情况我不知道，但现在你能做什么呢？你应该试着去接受这一切。");
 				break;
 
 			case "shop_bank":
-				Msg("Yes, I take care of the banking needs.<br/>I understand if you feel apprehensive about trusting me,<br/>since I don't work in an actual building.");
-				Msg("Even so, just because there isn't a structure<br/>doesn't mean it's impossible to see to your banking needs.<br/>If there's anything you need,<br/>you just let me know.");
+				Msg("是的,银行需要我。<br/>如果你觉得不能信任我，我理解<br/>因为我的工作对于你来说是虚无缥缈的");
+				Msg("即便如此<br/>这可并不意味您不需要使用银行。<br/>如果你有什么需要的话,<br/>请你来告诉我。");
 				break;
 
 			case "shop_smith":
-				Msg("The Blacksmith's Shop is located just to my left.<br/>You should drop by if you wish to repair or purchase a new weapon.");
-				Msg("I can even hold onto your weapons as much as the storage space allows.<br/>Make note of that for future reference.");
+				Msg("铁匠铺位于我的左边。<br/>如果你想维修或购买新武器应该去那里。");
+				Msg("尽可能让出更多的存储空间给你的新武器。<br/>注意查看你的背包");
 				break;
 
 			case "skill_rest":
-				Msg("Sion once came to me<br/>asking me to teach him the Resting skill.");
-				Msg("He should learn such things from his own father.<br/>I don't understand why he asked me instead.");
+				Msg("锡安曾经来找我<br/>让我教他一些技能。");
+				Msg("他从他的父亲那里应该能学到这些。<br/>我不明白为什么他来问我。");
 				break;
 
 			case "skill_range":
-				Msg("I'm not accustomed to fighting,<br/>so asking me about it wouldn't be of much help to you.");
-				Msg("Do you still want my help?");
-				Msg("Really, I know nothing about it.");
+				Msg("抱歉，我不是专门去打架的浪人,<br/>所以问我不会对你的帮助。");
+				Msg("你还需要我的帮助吗?");
+				Msg("真的,我对它一无所知。");
 				break;
 
 			case "skill_instrument":
-				Msg("I'm not quite sure.");
-				Msg("Let's see...<br/>I wonder who you should go see for that...");
+				Msg("我不太确定。");
+				Msg("让我们看看…<br/>我只是想知道，谁应该去看……");
 				break;
 
 			case "skill_composing":
-				Msg("I'm not really interested in composing.");
-				Msg("Haha... I have nothing to say even if you think<br/>I'm the least romantic person in the world.");
+				Msg("我对创作并不真正感兴趣");
+				Msg("哈哈…我没有什么可说的了,即使你认为<br/>我是这个世界上最不浪漫的人。");
 				break;
 
 			case "skill_tailoring":
-				Msg("Hmmm... Did someone tell you that<br/>I may know a thing or two about it?");
-				Msg("This just seems like a bad joke.");
+				Msg("嗯…有没有人告诉你,<br/>我可能知道这两件事呢?");
+				Msg("这看起来像一个糟糕的玩笑，啊哈哈。");
 				break;
 
 			case "skill_magnum_shot":
-				Msg("Magnum Shot?<br/>The only thing I know is that it's a bow-related skill.");
-				Msg("I'm no good when it comes to fighting.<br/>Honestly, I'm fed up with people telling others that<br/>they used to be great fighters back in the day.<br/>It just sounds cocky.");
+				Msg("弓强击？<br/>我唯一知道的是,这是一个弓的相关技能。");
+				Msg("当谈到战斗时候<br/>老实说,我受够了别人告诉我,<br/>他们曾经是伟大的战士。<br/>这些只是他们太过自大。");
 				break;
 
 			case "skill_gathering":
-				Msg("Gathering?<br/>Iron ores are really all that can be found in this village.<br/>Why don't you grab a Pickaxe and<br/>head on over to the mine in Barri Dungeon?");
-				Msg("You can purchase a Pickaxe from the Blacksmith's Shop.");
+				Msg("采集？<br/>铁矿都是可以在这个村子里发现的。<br/>你为什么不带上镐和<br/>脑子到在练习地城找我？");
+				Msg("你可以从铁匠铺购买镐。");
 				break;
 
 			case "pool":
-				Msg("I'm not sure if you've already heard this from someone else,<br/>but water is precious in this town.");
-				Msg("Emain Macha would be another story,<br/>but a reservoir in a town like this is...");
+				Msg("我不知道你是否已经从别人那里听到了这个消息，<br/>但在这个镇上，水是最宝贵的");
+				Msg("爱尔兰城邦是另一个故事了<br/>但是在这个小镇，水库…真的不充足");
 				break;
 
 			case "farmland":
-				Msg("The fields around this town are mostly farmland.<br/>You can see it yourself<br/>if you go along the town walls.");
+				Msg("这个镇上的大部分都是农田。<br/>如果你沿着城墙走，<br/>你可以看见它");
 				break;
 
 			case "windmill":
-				Msg("Since water is so rare in this town,<br/>farming is no easy task.");
-				Msg("Also, since the land is barren,<br/>regardless of what's planted, it will wither away in no time.");
-				Msg("I guess we should be thankful for the few trees that are growing here...");
+				Msg("由于在这个镇上的水是如此的稀少，<br/>所以农业已经不是一件容易的事了。");
+				Msg("此外，土地都是荒芜的，<br/>不管是什么样的植物，它都可能会在任何时候枯萎。");
+				Msg("我想我们应该感谢在这里生长的少数几棵树…");
 				break;
 
 			case "brook":
-				Msg("This town is located in a valley,<br/>so it's strange that the wind almost never blows here.");
-				Msg("A windmill can be built,<br/>but I'm not sure what good it would do in a town like this.");
+				Msg("这个小镇坐落在一个山谷里，<br/>所以很奇怪，几乎没有什么风吹到这里。");
+				Msg("如果在这里建一个风车<br/>我不知道它会在这样一个城市发挥什么功能。");
 				break;
 
 			case "shop_headman":
-				Msg("I'm not sure.<br/>Now that you mention it, we do not have a chief in this town.");
-				Msg("Our town is that small...");
+				Msg("我不确定。<br/>不过，既然你提到了，我们就没有必要留在这个小镇了");
+				Msg("我们的城镇是那么小…");
 				break;
 
 			case "temple":
-				Msg("Priest Comgan seems to be having a hard time.<br/>I'd honestly like to help if I'm in any position to help but...");
-				Msg("I'm currently struggling myself so...");
+				Msg("牧师康格很难在这个时候出现。<br/>我想知道他现在在哪里。");
+				Msg("我正在苦苦寻找…");
 				break;
 
 			case "school":
-				Msg("I should send Ibbie to school as well.");
-				Msg("She was too sick to attend school at our last town.<br/>I'm worried about her.");
-				Msg("I can't let her be out of school for too long.");
+				Msg("我应该去送艾比上学。");
+				Msg("她病得太重了，我们在一个镇上学的，<br/>我很担心她。");
+				Msg("我不能让她离开学校太久。");
 				break;
 
 			case "skill_windmill":
-				Msg("Windmill skill?<br/>It sounds like a combat skill afterall.");
-				Msg("Fighting with fists is a method<br/>used by those who lack the will or ability to carry an intelligent conversation.");
-				Msg("Why resort to fists without first making a good use of words?");
+				Msg("风车技能吗？<br/>这听起来像一个战斗技能");
+				Msg("用拳头战斗是一种方法，<br/>当然也可以用你的聪明才智");
+				Msg("拳头没有你的脑子好用");
 				break;
 
 			case "skill_campfire":
-				Msg("Please be extra cautious<br/>when building a fire in this town.");
-				Msg("There was a big fire in this town not too long ago,<br/>so the residents become annoyed<br/>with people carelessly building fire.");
-				Msg("No one will stop you from starting one,<br/>but you should keep this in mind.");
+				Msg("在这个镇上的建筑火灾时，<br/>请格外小心。");
+				Msg("不太久之前，在这个镇上发生过一场很大的火<br/>所有的居民都在为被火烧过的建筑烦恼");
+				Msg("没有人会阻止<br/>但你要牢记这一点");
 				break;
 
 			case "shop_restaurant":
-				Msg("Are you hungry?<br/>Then you should go to the Pub<br/>and order some food from Jennifer.");
+				Msg("你饿了吗？<br/>那你应该去酒吧，并订购一些珍妮佛的食物");
 				break;
 
 			case "shop_armory":
-				Msg("It'll be faster for you to talk to Elen at the Blacksmith's Shop about that<br/>than me.");
+				Msg("它会更快让你和艾伦在铁匠铺谈谈<br/>比我好。");
 				break;
 
 			case "shop_cloth":
-				Msg("Clothes? Hmmm...<br/>I, for one, don't concern myself too much with clothes.");
-				Msg("Even so, Gilmore's General Shop...<br/>That place is just... Wow...");
+				Msg("衣服吗?嗯…<br/>我,不要太关注自己的衣服。");
+				Msg("即便如此，吉尔摩的杂货店...<br/>那个地方就是…真的...");
 				break;
 
 			case "shop_bookstore":
-				Msg("There's no bookstore in this town.<br/>We often have to rely on Dunbarton if we want to buy anything.");
+				Msg("镇里没有书店。<br/>如果我们想要买东西，就找邓巴顿。");
 				break;
 
 			case "shop_goverment_office":
-				Msg("The town is too small<br/>to have a need for our own town office.");
-				Msg("If any town office will do for your needs,<br/>why don't you check out the one in Dunbarton?");
+				Msg("这个镇太小了<br/>我需要我们自己的办公室。");
+				Msg("如果你在其他任何镇都有办公室需求,<br/>那你为什么不看看丹巴顿郡?");
 				break;
 
 			case "graveyard":
-				Msg("There's no graveyard in this town.<br/>I do vaguely remember hearing that people are<br/>buried in a place located in Barri Dungeon.");
+				Msg("镇里没有墓地。<br/>我隐约听到人们说<br/>它埋在的一处位于练习地城");
 				break;
 
 			case "bow":
